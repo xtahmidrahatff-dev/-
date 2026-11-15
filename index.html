@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>বন্ধুসভা</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Baloo+Da+2:wght@600;800&display=swap">
+<style>
+/* Layout: sticky top bar, three columns on desktop (nav / feed / people), single feed column on phones. */
+:root{
+  --bg:#eef3f2; --surface:#ffffff; --fg:#14282a; --muted:#5d7173; --line:#d9e4e2;
+  --accent:#0d6b66; --accent-fg:#ffffff; --accent-soft:#d7efec; --warm:#e4572e; --chip:#e6eeed;
+  --font-body:'Hind Siliguri','Noto Sans Bengali','Segoe UI',system-ui,sans-serif;
+  --font-display:'Baloo Da 2','Hind Siliguri','Noto Sans Bengali',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1819; --surface:#162526; --fg:#e6f0ee; --muted:#93a9a7; --line:#264042;
+  --accent:#4fc7bf; --accent-fg:#06201f; --accent-soft:#1c3a3a; --warm:#ff8a65; --chip:#1f3335; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1819; --surface:#162526; --fg:#e6f0ee; --muted:#93a9a7; --line:#264042;
+  --accent:#4fc7bf; --accent-fg:#06201f; --accent-soft:#1c3a3a; --warm:#ff8a65; --chip:#1f3335; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding-inline:max(16px,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:12px;height:58px}
+.logo{font-family:var(--font-display);font-weight:800;font-size:26px;color:var(--accent);letter-spacing:.2px;display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo i{width:28px;height:28px;border-radius:9px;background:var(--accent);display:grid;place-items:center}
+.logo svg{width:18px;height:18px}
+.tabs{display:flex;gap:4px;margin-left:auto}
+.tab{padding:8px 16px;border-radius:10px;color:var(--muted);font-weight:600}
+.tab[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.wrap{max-width:1080px;margin:20px auto 0;display:grid;grid-template-columns:220px minmax(0,1fr) 260px;gap:20px;align-items:start}
+.side{position:sticky;top:calc(78px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:12px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.av{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;font-size:18px}
+.av.sm{width:34px;height:34px;font-size:14px}
+.row{display:flex;gap:12px;align-items:center;min-width:0}
+.name{font-weight:600;line-height:1.3}
+.meta{color:var(--muted);font-size:13px}
+.composer textarea,.cm input,.field{width:100%;font:inherit;color:var(--fg);background:var(--chip);border:1px solid transparent;border-radius:12px;padding:10px 14px}
+.composer textarea{resize:vertical;min-height:84px;margin-block:12px 10px}
+.composer textarea::placeholder,.cm input::placeholder{color:var(--muted)}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.moods{display:flex;gap:6px;flex-wrap:wrap}
+.mood{padding:4px 12px;border-radius:99px;background:var(--chip);font-size:14px;color:var(--muted)}
+.mood[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.btn{background:var(--accent);color:var(--accent-fg);padding:8px 20px;border-radius:10px;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:var(--chip);color:var(--fg)}
+.post p{margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:17px}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;margin-left:6px}
+.stat{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.bar{display:flex;gap:4px;padding-top:6px}
+.bar button{flex:1;padding:8px;border-radius:10px;color:var(--muted);font-weight:600}
+.bar button:hover{background:var(--chip)}
+.bar button.on{color:var(--warm)}
+.cms{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.cmt{display:flex;gap:10px}
+.bub{background:var(--chip);border-radius:14px;padding:6px 14px;min-width:0;overflow-wrap:anywhere}
+.cm{display:flex;gap:8px;margin-top:12px}
+.cm input{padding:8px 14px}
+.nav a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;color:var(--fg);text-decoration:none;font-weight:500}
+.nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.people .row{padding:8px 0;justify-content:space-between}
+.people .row>.row{justify-content:flex-start;flex:1}
+.fbtn{font-size:13px;font-weight:600;padding:4px 12px;border-radius:99px;background:var(--accent-soft);color:var(--accent);flex:none}
+.fbtn[aria-pressed="true"]{background:var(--chip);color:var(--muted)}
+h2{font-family:var(--font-display);font-size:18px;margin:0 0 6px}
+.cover{height:150px;border-radius:14px 14px 0 0;background:linear-gradient(120deg,#0d6b66,#2aa39a 55%,#e4572e)}
+.prof{margin-top:-44px;padding:0 16px 16px;display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.prof .av{width:88px;height:88px;font-size:38px;border:4px solid var(--surface)}
+.pcard{padding:0;overflow:hidden}
+.edit{display:grid;gap:10px;padding:0 16px 16px}
+.empty{text-align:center;color:var(--muted);padding:28px 16px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 18px;border-radius:99px;font-size:14px;z-index:40}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.side{display:none}}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:var(--accent)}}
+</style>
+</head>
+<body>
+
+
+<header class="top"><div class="top-in">
+  <a class="logo" href="#home"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><circle cx="17" cy="10" r="2.6"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5M15.5 14.8c2.9-.4 5.5 1.3 5.5 4.2"/></svg></i>বন্ধুসভা</a>
+  <nav class="tabs" aria-label="প্রধান মেনু">
+    <a class="tab" id="t-home" href="#home">হোম</a>
+    <a class="tab" id="t-profile" href="#profile">প্রোফাইল</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <aside class="side">
+    <nav class="card nav" aria-label="দ্রুত লিংক">
+      <a href="#home" id="n-home">হোম ফিড</a>
+      <a href="#profile" id="n-profile">আমার প্রোফাইল</a>
+    </nav>
+    <div class="card meta" id="stats"></div>
+  </aside>
+  <section class="col" id="view"></section>
+  <aside class="side">
+    <div class="card people"><h2>পরিচিত মানুষ</h2><div id="people"></div></div>
+  </aside>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+var KEY="bondhusobha-v1";
+var HUES=["#0d6b66","#c2410c","#6d28d9","#0369a1","#be185d","#4d7c0f","#b45309"];
+var PEOPLE=[
+ {n:"সুমাইয়া আক্তার",h:0},{n:"তানভীর হাসান",h:1},{n:"নুসরাত জাহান",h:2},
+ {n:"ফাহিম রহমান",h:3},{n:"মীম চৌধুরী",h:4}];
+var MOODS=["😊 ভালো আছি","🎉 উদযাপন","📚 পড়াশোনা","💡 আইডিয়া"];
+function seed(){return {
+ me:{name:"রাহাত",bio:"নতুন কিছু বানাতে ভালোবাসি। এখানে আমার ভাবনাগুলো লিখে রাখি।"},
+ follow:{},
+ posts:[
+  {id:1,a:"সুমাইয়া আক্তার",h:0,t:"২ ঘণ্টা আগে",x:"আজ সকালে ছাদে বসে চা খেতে খেতে বৃষ্টি দেখলাম। শহরের এই শব্দটা আমার খুব প্রিয়। আপনাদের কেমন কাটছে দিন?",mood:"😊 ভালো আছি",l:["তানভীর হাসান","মীম চৌধুরী","নুসরাত জাহান"],c:[{a:"তানভীর হাসান",t:"বৃষ্টির দিনে চা আর খিচুড়ি হলে আর কিছু লাগে না!"}]},
+  {id:2,a:"তানভীর হাসান",h:1,t:"৫ ঘণ্টা আগে",x:"পরীক্ষা শেষ! তিন মাসের পর আজ প্রথম রাত জেগে সিনেমা দেখব। কোন সিনেমাটা দেখা উচিত বলুন তো?",mood:"🎉 উদযাপন",l:["সুমাইয়া আক্তার","ফাহিম রহমান"],c:[{a:"মীম চৌধুরী",t:"অভিনন্দন! ‘চলন্ত বাস’ দেখে ফেল, হাসতে হাসতে শেষ হবি।"},{a:"ফাহিম রহমান",t:"আমিও আসছি 😄"}]},
+  {id:3,a:"নুসরাত জাহান",h:2,t:"গতকাল",x:"ছোট ব্যবসা শুরু করার আগে যা শিখেছি: প্রথমে একজন ক্রেতাকে খুশি করো, বাকিরা নিজেরাই আসবে। আপনার কোনো অভিজ্ঞতা থাকলে কমেন্টে জানান।",mood:"💡 আইডিয়া",l:["সুমাইয়া আক্তার","তানভীর হাসান","ফাহিম রহমান","মীম চৌধুরী"],c:[]},
+  {id:4,a:"ফাহিম রহমান",h:3,t:"গতকাল",x:"আজ লাইব্রেরিতে বসে তিন ঘণ্টা পড়লাম। ফোন বন্ধ রাখলে মনোযোগ কতটা বাড়ে, সত্যিই অবাক হয়েছি।",mood:"📚 পড়াশোনা",l:["নুসরাত জাহান"],c:[{a:"সুমাইয়া আক্তার",t:"আমিও আজ থেকে চেষ্টা করব।"}]}
+ ],next:5,mood:""};}
+var S;
+try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){S=null}
+if(!S||!S.posts)S=seed();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var BN="০১২৩৪৫৬৭৮৯";function bn(n){return String(n).replace(/\d/g,function(d){return BN[d]})}
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function init(n){return esc(String(n).trim().charAt(0)||"?")}
+function av(n,h,c){return '<span class="av '+(c||"")+'" style="background:'+HUES[h%HUES.length]+'" aria-hidden="true">'+init(n)+'</span>'}
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.k);toast.k=setTimeout(function(){t.hidden=true},1800)}
+function myName(){return S.me.name||"আমি"}
+
+function postHTML(p){
+  var liked=p.l.indexOf(myName())>-1;
+  var mine=p.a===myName()&&p.mine;
+  var cms=p.c.map(function(c){return '<div class="cmt">'+av(c.a,c.a===myName()?0:(PEOPLE.filter(function(x){return x.n===c.a})[0]||{h:5}).h,"sm")+'<div class="bub"><div class="name" style="font-size:14px">'+esc(c.a)+'</div>'+esc(c.t)+'</div></div>'}).join("");
+  return '<article class="card post" data-id="'+p.id+'">'
+   +'<div class="row">'+av(p.a,p.h)+'<div style="flex:1;min-width:0"><div class="name">'+esc(p.a)+(p.mood?'<span class="tag">'+esc(p.mood)+'</span>':'')+'</div><div class="meta">'+esc(p.t)+'</div></div>'
+   +(mine?'<button class="meta" data-act="del" aria-label="পোস্ট মুছুন">মুছুন</button>':'')+'</div>'
+   +'<p>'+esc(p.x)+'</p>'
+   +'<div class="stat"><span>'+bn(p.l.length)+' জন পছন্দ করেছেন</span><span>'+bn(p.c.length)+' টি মন্তব্য</span></div>'
+   +'<div class="bar"><button data-act="like" class="'+(liked?"on":"")+'" aria-pressed="'+liked+'">'+(liked?"♥ পছন্দ করেছেন":"♡ পছন্দ")+'</button><button data-act="focus">মন্তব্য</button><button data-act="share">শেয়ার</button></div>'
+   +'<div class="cms">'+cms+'</div>'
+   +'<form class="cm" data-act="cmt">'+av(myName(),0,"sm")+'<input type="text" id="c-'+p.id+'" placeholder="মন্তব্য লিখুন…" aria-label="মন্তব্য লিখুন" autocomplete="off"><button class="btn" type="submit">পাঠান</button></form>'
+   +'</article>';
+}
+function composerHTML(){
+  return '<div class="card composer"><div class="row">'+av(myName(),0)+'<div class="name">'+esc(myName())+', আপনার মনে কী চলছে?</div></div>'
+   +'<textarea id="newpost" placeholder="এখানে লিখুন…" aria-label="নতুন পোস্ট"></textarea>'
+   +'<div class="actions"><div class="moods" role="group" aria-label="অনুভূতি">'+MOODS.map(function(m,i){return '<button class="mood" data-mood="'+i+'" aria-pressed="'+(S.mood===m)+'">'+m+'</button>'}).join("")+'</div>'
+   +'<button class="btn" id="publish" disabled>পোস্ট করুন</button></div></div>';
+}
+function home(){
+  var h=composerHTML()+S.posts.map(postHTML).join("");
+  return h||'<div class="card empty">এখনো কোনো পোস্ট নেই। প্রথম পোস্টটি আপনিই করুন।</div>';
+}
+function profile(){
+  var mine=S.posts.filter(function(p){return p.mine});
+  return '<div class="card pcard"><div class="cover"></div><div class="prof">'+av(myName(),0)
+   +'<div style="flex:1;min-width:200px"><h2 style="font-size:24px;margin:0">'+esc(myName())+'</h2><div class="meta">'+bn(mine.length)+' টি পোস্ট · '+bn(Object.keys(S.follow).filter(function(k){return S.follow[k]}).length)+' জনকে অনুসরণ করছেন</div></div></div>'
+   +'<div class="edit"><label class="meta" for="pname">নাম</label><input class="field" id="pname" value="'+esc(S.me.name)+'" maxlength="30">'
+   +'<label class="meta" for="pbio">পরিচিতি</label><textarea class="field" id="pbio" rows="3" maxlength="200">'+esc(S.me.bio)+'</textarea>'
+   +'<div><button class="btn" id="psave">সংরক্ষণ করুন</button></div></div></div>'
+   +'<h2>আমার পোস্ট</h2>'
+   +(mine.length?mine.map(postHTML).join(""):'<div class="card empty">আপনি এখনো কিছু পোস্ট করেননি। হোম ফিড থেকে শুরু করুন।</div>');
+}
+function people(){
+  document.getElementById("people").innerHTML=PEOPLE.map(function(p,i){
+    var f=!!S.follow[p.n];
+    return '<div class="row"><div class="row">'+av(p.n,p.h,"sm")+'<span class="name" style="font-size:15px">'+esc(p.n)+'</span></div><button class="fbtn" data-follow="'+i+'" aria-pressed="'+f+'">'+(f?"অনুসরণ করছেন":"অনুসরণ")+'</button></div>'}).join("");
+  var tot=S.posts.length, lk=S.posts.reduce(function(a,p){return a+p.l.length},0);
+  document.getElementById("stats").innerHTML='ফিডে '+bn(tot)+' টি পোস্ট<br>মোট '+bn(lk)+' টি পছন্দ';
+}
+function route(){
+  var r=location.hash==="#profile"?"profile":"home";
+  var v=document.getElementById("view");
+  v.innerHTML=r==="profile"?profile():home();
+  ["t-","n-"].forEach(function(pf){["home","profile"].forEach(function(k){var e=document.getElementById(pf+k);if(k===r)e.setAttribute("aria-current","page");else e.removeAttribute("aria-current")})});
+  people();
+}
+function find(id){return S.posts.filter(function(p){return p.id===+id})[0]}
+var view=document.getElementById("view");
+view.addEventListener("input",function(e){if(e.target.id==="newpost")document.getElementById("publish").disabled=!e.target.value.trim()});
+view.addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  if(b.dataset.mood!==undefined){var m=MOODS[+b.dataset.mood];S.mood=S.mood===m?"":m;
+    document.querySelectorAll(".mood").forEach(function(x){x.setAttribute("aria-pressed",MOODS[+x.dataset.mood]===S.mood)});return}
+  if(b.id==="publish"){var ta=document.getElementById("newpost"),t=ta.value.trim();if(!t)return;
+    S.posts.unshift({id:S.next++,a:myName(),h:0,t:"এইমাত্র",x:t,mood:S.mood,l:[],c:[],mine:true});S.mood="";save();route();toast("পোস্ট প্রকাশিত হয়েছে");return}
+  if(b.id==="psave"){S.me.name=document.getElementById("pname").value.trim()||"রাহাত";S.me.bio=document.getElementById("pbio").value.trim();
+    S.posts.forEach(function(p){if(p.mine)p.a=S.me.name});save();route();toast("প্রোফাইল সংরক্ষিত");return}
+  var art=b.closest(".post");if(!art)return;var p=find(art.dataset.id);if(!p)return;
+  var act=b.dataset.act;
+  if(act==="like"){var i=p.l.indexOf(myName());if(i>-1)p.l.splice(i,1);else p.l.push(myName());save();route()}
+  else if(act==="focus"){document.getElementById("c-"+p.id).focus()}
+  else if(act==="share"){var u=location.href.split("#")[0];
+    (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(u):Promise.reject()).then(function(){toast("লিংক কপি হয়েছে")},function(){toast("লিংক কপি করা যায়নি")})}
+  else if(act==="del"){S.posts=S.posts.filter(function(x){return x.id!==p.id});save();route();toast("পোস্ট মুছে ফেলা হয়েছে")}
+});
+view.addEventListener("submit",function(e){
+  e.preventDefault();var f=e.target.closest("form");if(!f)return;
+  var art=f.closest(".post"),p=find(art.dataset.id),inp=f.querySelector("input"),t=inp.value.trim();
+  if(!p||!t)return;p.c.push({a:myName(),t:t});save();route();
+  var n=document.getElementById("c-"+p.id);if(n)n.focus()});
+document.getElementById("people").addEventListener("click",function(e){
+  var b=e.target.closest("[data-follow]");if(!b)return;var n=PEOPLE[+b.dataset.follow].n;S.follow[n]=!S.follow[n];save();people()});
+window.addEventListener("hashchange",function(){route();window.scrollTo(0,0)});
+route();
+})();
+</script>
+
+</body>
+</html>
